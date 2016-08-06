@@ -64,7 +64,7 @@ RCT_EXPORT_METHOD(greet:(NSString *)name)
 これは次に挙げることをしています。
 
 - まず `RCTRegisterModule` を `extern` 関数として宣言しています。これは、関数の実装がコンパイラーから見えないですが、リンク時に使用可能であることを意味しています。
-- 次に、任意のマクロパラメーター `js_name` を返す `moduleName` というメソッドを宣言しています。ここではあなたのモジュールが Objective-C のクラス名ではなく、 JavaScript での名前を持って欲しいからですね。
+- 次に、任意のマクロパラメーター `js_name` を返す `moduleName` というメソッドを宣言しています。ここではあなたのモジュールが Objective-C のクラス名ではなく、 JavaScript での名前を持ってほしいからですね。
 - 最後に、「ブリッジ」にこのモジュールを認識させるため、上で定義した `RCTRegisterModule` 関数を呼び出す `load` メソッドを宣言しています。アプリはメモリー上にロードされた際、すべてのクラスに対してこの `load` メソッドを呼び出します。
 
 `RCT_EXPORT_METHOD(method)`
@@ -277,3 +277,37 @@ call[args][2] = obj_msgSend(RCTConvert, NSArray, @[@"a", @1])
 call[args][3] = NSInvocation(RCTConvert, CGRect, @{ @"x": @0, ... })
 call()
 ``
+
+スレッド実行
+------------
+
+上で言及しているように、すべてのモジュールはデフォルトでそれぞれの [GCD](https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html) キューを持っています。モジュールが実行されるべきキューの指定は `-methodQueue` を実装するか、 `methodQueue` プロパティを有効なキューにすることで可能です。例外は `RCTViewManager` を継承している `View Managers`[^4] です。これはデフォルトでシャドウキューを使います。また、`RCTJSThread` は特別で、キューではなくスレッドを使います。ちなみに `RCTJSThread` はただのプレイスホルダーです。
+
+[^4]: 実は `View Managers` の親クラスは対象キューとしてシャドウキューを明示的に指定しているため、例外ではなかったりします
+
+現在のスレッド実行における「ルール群」は次です。
+
+- `-init` と `-setBridge` はメインスレッドで呼び出されることが保証されています
+- すべてのエクスポートされたメソッドは対象キュー上で呼び出されることが保証されています
+-`RCTInvalidating` プロトコルを実装した場合、 `invalidate` も対象キュー上で呼び出されることが保証されています
+- `-dealloc` がどのスレッドから呼び出されるかの保証はありません
+
+JavaScript 側から連続して呼び出しを受けた場合、対象キューによってまとめられ、並行に実行されます。
+
+```objc
+// `buckets` の中の `calls` を `queue` がまとめている
+for (id queue in buckets) {
+  dispatch_block_t block = ^{
+    NSOrderedSet *calls = [buckets objectForKey:queue];
+    for (NSNumber *indexObj in calls) {
+      // 実際の呼び出し
+    }
+  };
+
+  if (queue == RCTJSThread) {
+    [_javaScriptExecutor executeBlockOnJavaScriptQueue:block];
+  } else if (queue) {
+    dispatch_async(queue, block);
+  }
+}
+```
