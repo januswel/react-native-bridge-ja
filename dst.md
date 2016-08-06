@@ -153,3 +153,26 @@ JavaScript の実行環境は、バックグラウンドスレッドでの拡張
 JSGlobalContextRef ctx = JSGlobalContextCreate(NULL);
 _context = [[RCTJavaScriptContext alloc] initWithJSContext:ctx];
 ```
+
+### JSON の設定を注入する
+
+我々のモジュールの情報のみを持つ JSON の設定は次のようになります。
+
+```objc
+{
+  "remoteModuleConfig": {
+    "Logger": {
+      "constants": { /* If we had exported constants... */ },
+      "moduleID": 1,
+      "methods": {
+        "requestPermissions": {
+          "type": "remote",
+          "methodID": 1
+        }
+      }
+    }
+  }
+}
+```
+
+これは JavaScript VM 上にグローバル変数の形で定義される格納場所です。そのため「ブリッジ」の JavaScript 側が初期化される際、モジュールを生成するためにこの情報を使うことができます。

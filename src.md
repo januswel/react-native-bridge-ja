@@ -138,3 +138,26 @@ The JavaScript executors have a `-setUp` method that allows it to do more expens
 JSGlobalContextRef ctx = JSGlobalContextCreate(NULL);
 _context = [[RCTJavaScriptContext alloc] initWithJSContext:ctx];
 ```
+
+### Inject JSON Configuration
+
+The JSON configuration containing only our module would be something like:
+
+```objc
+{
+  "remoteModuleConfig": {
+    "Logger": {
+      "constants": { /* If we had exported constants... */ },
+      "moduleID": 1,
+      "methods": {
+        "requestPermissions": {
+          "type": "remote",
+          "methodID": 1
+        }
+      }
+    }
+  }
+}
+```
+
+This is store in the JavaScript VM as a global variable, so when the JS side of the bridge is initialised it can use this information to create the modules.
