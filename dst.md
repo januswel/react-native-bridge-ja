@@ -66,3 +66,35 @@ RCT_EXPORT_METHOD(greet:(NSString *)name)
 - まず `RCTRegisterModule` を `extern` 関数として宣言しています。これは、関数の実装がコンパイラーから見えないですが、リンク時に使用可能であることを意味しています。
 - 次に、任意のマクロパラメーター `js_name` を返す `moduleName` というメソッドを宣言しています。ここではあなたのモジュールが Objective-C のクラス名ではなく、 JavaScript での名前を持って欲しいからですね。
 - 最後に、「ブリッジ」にこのモジュールを認識させるため、上で定義した `RCTRegisterModule` 関数を呼び出す `load` メソッドを宣言しています。アプリはメモリー上にロードされた際、すべてのクラスに対してこの `load` メソッドを呼び出します。
+
+`RCT_EXPORT_METHOD(method)`
+---------------------------
+
+このマクロは「より興味深い」です。あなたのメソッドには何もつけ加えませんが、指定されたメソッド名の宣言に加えて、新しいメソッドを作成します。
+
+新しく定義されるメソッドは例のようなものになります。
+
+```objc
++ (NSArray *)__rct_export__120
+{
+  return @[ @"", @"log:(NSString *)message" ];
+}
+```
+
+「いったいどうなってるんだ ?」というのはとてもいい反応です。
+
+これは次の要素を連結して生成されています。
+
+- プリフィクス `__rct_export__`
+- 任意の `js_name`
+    - 上の例は `js_name` が空の場合です
+- 宣言されている行の行数
+- [`__COUNTER__`](https://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html) マクロの値
+
+このメソッドの目的は任意の `js_name` とメソッドシグネチャーを含む配列を返すだけです。名前の生成は単にメソッド名の衝突を避けているだけです。
+
+> [^2] it's still technically possible to have 2 generated methods with the same name if you're using a category, but very much unlikely and shouldn't result in any expected behaviour, although Xcode will warn you that it has an unexpected behaviour.
+
+[^3]: Objective-C のカテゴリーを使えば同じ名前を持つ 2 つのメソッドを生成することは技術的に可能です。ところが、実際には起こりえないはずですが、 Xcode は期待しない動作になると警告してきます。
+
+
