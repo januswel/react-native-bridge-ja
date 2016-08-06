@@ -14,9 +14,10 @@ http://tadeuzagallo.com/blog/react-native-bridge/
 - メインスレッド: UIKit が使用します
 - JavaScript スレッド: あなたの JavaScript コードが実際に走ります
 
-さらに、すべてのネイティブモジュールは指定されないかぎりそれぞれの [GCD](https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html) キューを持っています ( 詳細についてはこれから述べます ) 。
+さらに、すべてのネイティブモジュールは指定されないかぎりそれぞれの [GCD](https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html)(訳注1) キューを持っています ( 詳細についてはこれから述べます ) 。
 
 注1: シャドウキューは実際にはスレッドというより GCD キューですが、この名前を提案しています
+訳注1: [日本語訳](https://developer.apple.com/jp/documentation/ConcurrencyProgrammingGuide.pdf)もあります
 
 Native モジュール
 -----------------
