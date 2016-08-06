@@ -16,7 +16,7 @@ http://tadeuzagallo.com/blog/react-native-bridge/
 
 さらに、すべてのネイティブモジュールは指定されないかぎりそれぞれの [GCD](https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html)(訳注1) キューを持っています ( 詳細についてはこれから述べます ) 。
 
-注1: シャドウキューは実際にはスレッドというより GCD キューですが、この名前を提案しています
+注1: 名前を示すとおり、シャドウキューは実際にはスレッドというより GCD キューです
 訳注1: [日本語訳](https://developer.apple.com/jp/documentation/ConcurrencyProgrammingGuide.pdf)もあります
 
 ネイティブモジュール
