@@ -1,8 +1,6 @@
 Bridging in React Native
 ========================
 
-http://tadeuzagallo.com/blog/react-native-bridge/
-
 この投稿では React Native の基礎を知っている方を対象に、ネイティブと JavaScript の通信時における内部の動作へ焦点をあてます。
 
 メインスレッド
