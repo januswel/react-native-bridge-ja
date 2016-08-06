@@ -6,7 +6,7 @@ On this post I assume you know the basics of React Native, and will focus on how
 Main Threads
 ------------
 
-Before anything else, keep in mind that there are 3 "main" threads※ in React Native:
+Before anything else, keep in mind that there are 3 "main" threads** in React Native:
 
 - The shadow queue: where the layout happens
 - The main thread: where UIKit does its thing
@@ -14,7 +14,7 @@ Before anything else, keep in mind that there are 3 "main" threads※ in React N
 
 Plus every native module has its own GCD Queue unless it specifies otherwise (a more detailed explanation is coming).
 
-※ The"shadow queue" is actually a GCD Queue rather than a thread, as the name suggests.
+** The "shadow queue" is actually a GCD Queue rather than a thread, as the name suggests.
 
 Native Modules
 --------------
