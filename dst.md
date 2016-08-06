@@ -93,8 +93,6 @@ RCT_EXPORT_METHOD(greet:(NSString *)name)
 
 このメソッドの目的は任意の `js_name` とメソッドシグネチャーを含む配列を返すだけです。名前の生成は単にメソッド名の衝突を避けているだけです。
 
-> [^2] it's still technically possible to have 2 generated methods with the same name if you're using a category, but very much unlikely and shouldn't result in any expected behaviour, although Xcode will warn you that it has an unexpected behaviour.
-
 [^3]: Objective-C のカテゴリーを使えば同じ名前を持つ 2 つのメソッドを生成することは技術的に可能です。ところが、実際には起こりえないはずですが、 Xcode は期待しない動作になると警告してきます。
 
 実行時
@@ -125,8 +123,6 @@ for (Class moduleClass in RCTGetModuleClasses()) {
 ```
 
 ### モジュールの設定
-
-> Once we have our modules, in a background thread, we list all the methods for each module, and call the methods that begin with `__rct_export__`, so we can have a string representation of the method signature. That's important so we can have the actual types of the parameters, i.e. at runtime we'd only be able to know that a parameter is an `id`, this way we can know that it's actually an `NSString *` in this case.
 
 一度モジュールが初期化されると、バックグラウンドスレッドではそれぞれのモジュールのすべてのメソッドを列挙し、 `__rct_export__` ではじまるメソッドを呼び出します。こうすることでメソッドシグネチャーの文字列を得ることができます。パラメーターの型も知ることができるためこれは重要です。たとえば、実行時にはパラメーターが `id` 型だと知ることはできるでしょう。ただしこの方法ではそれが `NSString *` 型であることまでわかるのです。
 
@@ -222,8 +218,6 @@ Person.greet('Tadeu');
 呼び出しはネイティブ側からはじまらなければなりません[^3]。実行にあたって `NativeModules` のメソッドを呼ぶことで JavaScript を呼び出します。 `NativeModules` はネイティブ側で実行される呼び出しをキューに積みます。 JavaScript 側が完了すると、ネイティブ側はキューに積まれた呼び出し群を参照し、それらを実行します。 JavaScript のコールバックや呼び出しは「ブリッジ」を経由して再び JavaScript 側で実行されます。その際、 `_bridge` インスタンスを使うことでネイティブモジュールを通した `enqueueJSCall:args:` の呼び出しが可能になります。
 
 [^3]: 図は JavaScript を実行している途中を表しています
-
-> NOTE: If you've been following the project, there used to be a queue of calls from native -> JS as well, that'd be dispatched on every vSYNC, but it's been removed in order to improve start up time
 
 注意： React Native プロジェクトを追っている方はかつてネイティブ側から JavaScript 側の呼び出しにおいてもキューが同じように使われていたことをご存知かもしれません。それは vSYNC のたびに実行されるため、起動時間を短縮するために削除されました。
 
