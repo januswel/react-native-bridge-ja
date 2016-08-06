@@ -5,13 +5,12 @@ The source is written by Tadeu Zagallo:
 
 http://tadeuzagallo.com/blog/react-native-bridge/
 
-Thanks to Tadeu !!
-
-dst.md をご覧ください。 Tadeu さんへの感謝を忘れずに !!
-
+A lot of thanks, Tadeu !!
 
 ディレクトリー構成
 ------------------
+
+dst.md をご覧ください。 Tadeu さんへの感謝を忘れずに !!
 
 ```
 /
@@ -22,7 +21,7 @@ dst.md をご覧ください。 Tadeu さんへの感謝を忘れずに !!
     dst.md          翻訳後ファイル
 ```
 
-間違いを見つけた場合
---------------------
+間違いを見つけた場合は
+----------------------
 
 日本語として読みやすいように言葉を落としたり追加したりしています。意味的な間違いを見つけた際はぜひご指摘ください。
