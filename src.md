@@ -289,3 +289,9 @@ for (id queue in buckets) {
   }
 }
 ```
+
+### The end
+
+That's it, that's a slightly more in-depth overview of how the bridge works. I hope that people that want to build more complex modules and/or contribute to the core framework find it helpful.
+
+Feel free to reach out to me if anything wasn't clear, or not in-depth enough or if there's anything you'd like to hear about next!
