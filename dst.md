@@ -6,7 +6,7 @@ Bridging in React Native
 メインスレッド
 --------------
 
-何よりも先に、 React Native では 3 つのメインスレッド (注1) があることを覚えておいてください。
+何よりも先に、 React Native では 3 つのメインスレッド[^1]があることを覚えておいてください。
 
 - シャドウキュー
     - コンポーネント再配置時に使用されます
@@ -15,10 +15,10 @@ Bridging in React Native
 - JavaScript スレッド
     - あなたの JavaScript コードが実際に走ります
 
-さらに、すべてのネイティブモジュールは指定されないかぎりそれぞれの [GCD](https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html)(訳注1) キューを持っています ( 詳細についてはこれから述べます ) 。
+さらに、すべてのネイティブモジュールは指定されないかぎりそれぞれの [GCD](https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html)[^2] キューを持っています ( 詳細についてはこれから述べます ) 。
 
-注1: 名前を示すとおり、シャドウキューは実際にはスレッドというより GCD キューです
-訳注1: [日本語訳](https://developer.apple.com/jp/documentation/ConcurrencyProgrammingGuide.pdf)もあります
+[^1]: 名前を示すとおり、シャドウキューは実際にはスレッドというより GCD キューです
+[^2]: 訳注: [日本語訳](https://developer.apple.com/jp/documentation/ConcurrencyProgrammingGuide.pdf)もあります
 
 ネイティブモジュール
 --------------------
