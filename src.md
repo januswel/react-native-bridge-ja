@@ -161,3 +161,7 @@ The JSON configuration containing only our module would be something like:
 ```
 
 This is store in the JavaScript VM as a global variable, so when the JS side of the bridge is initialised it can use this information to create the modules.
+
+### Load JavaScript Code
+
+This is pretty intuitive, just load the source code from whatever provider was specified. Usually downloads the source from the packager during development or load it from disk in production.

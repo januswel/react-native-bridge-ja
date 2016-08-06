@@ -176,3 +176,7 @@ _context = [[RCTJavaScriptContext alloc] initWithJSContext:ctx];
 ```
 
 これは JavaScript VM 上にグローバル変数の形で定義される格納場所です。そのため「ブリッジ」の JavaScript 側が初期化される際、モジュールを生成するためにこの情報を使うことができます。
+
+### Load JavaScript Code
+
+これはとても直感的ですね。指定されたすべてのプロバイダーからソースコードを読みこむだけです。たいていの場合、開発時はパッケージャーからソースをダウンロードし、本番ではディスクから読みこむことになるでしょう。
