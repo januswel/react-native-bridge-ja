@@ -177,6 +177,23 @@ _context = [[RCTJavaScriptContext alloc] initWithJSContext:ctx];
 
 これは JavaScript VM 上にグローバル変数の形で定義される格納場所です。そのため「ブリッジ」の JavaScript 側が初期化される際、モジュールを生成するためにこの情報を使うことができます。
 
-### Load JavaScript Code
+### JavaScript コードの読みこみ
 
 これはとても直感的ですね。指定されたすべてのプロバイダーからソースコードを読みこむだけです。たいていの場合、開発時はパッケージャーからソースをダウンロードし、本番ではディスクから読みこむことになるでしょう。
+
+### JavaScript コードの実行
+
+一度準備が整うと、 JavaScriptCore VM 上でアプリケーションのソースコードを読みこめるようになります。 VM はソースをコピーし、パースし、実行するでしょう。最初の実行ではすべての CommonJS モジュールを登録し、エントリーポイントのファイルを require します。
+
+
+```objc
+JSValueRef jsError = NULL;
+JSStringRef execJSString = JSStringCreateWithCFString((__bridge
+      CFStringRef)script);
+JSStringRef jsURL = JSStringCreateWithCFString((__bridge
+      CFStringRef)sourceURL.absoluteString);
+JSValueRef result = JSEvaluateScript(strongSelf->_context.ctx,
+    execJSString, NULL, jsURL, 0, &jsError);
+JSStringRelease(jsURL);
+JSStringRelease(execJSString);
+```

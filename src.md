@@ -165,3 +165,19 @@ This is store in the JavaScript VM as a global variable, so when the JS side of 
 ### Load JavaScript Code
 
 This is pretty intuitive, just load the source code from whatever provider was specified. Usually downloads the source from the packager during development or load it from disk in production.
+
+### Execute JavaScript Code
+
+Once everything is ready, we can load the application source code in the JavaScriptCore VM, that will copy the source, parse and execute it. In the initial execution it should register all the CommonJS modules and require the entry point file.
+
+```objc
+JSValueRef jsError = NULL;
+JSStringRef execJSString = JSStringCreateWithCFString((__bridge
+      CFStringRef)script);
+JSStringRef jsURL = JSStringCreateWithCFString((__bridge
+      CFStringRef)sourceURL.absoluteString);
+JSValueRef result = JSEvaluateScript(strongSelf->_context.ctx,
+    execJSString, NULL, jsURL, 0, &jsError);
+JSStringRelease(jsURL);
+JSStringRelease(execJSString);
+```
