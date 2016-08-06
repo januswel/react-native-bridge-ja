@@ -181,3 +181,17 @@ JSValueRef result = JSEvaluateScript(strongSelf->_context.ctx,
 JSStringRelease(jsURL);
 JSStringRelease(execJSString);
 ```
+
+Modules in JavaScript
+---------------------
+
+The modules generated from JSON configuration showed above will be available in JavaScript through the `NativeModules` object of `react-native`, e.g.:
+
+```js
+var { NativeModules } = require('react-native');
+var { Person } = NativeModules;
+
+Person.greet('Tadeu');
+```
+
+The way it works is that when you call a method it goes to a queue, containing the module name, the method name and all the arguments used to call it. At the end of the JavaScript execution this queue is given back to native to execute this calls.

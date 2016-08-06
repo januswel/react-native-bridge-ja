@@ -197,3 +197,17 @@ JSValueRef result = JSEvaluateScript(strongSelf->_context.ctx,
 JSStringRelease(jsURL);
 JSStringRelease(execJSString);
 ```
+
+JavaScript モジュール
+---------------------
+
+上で示された JSON 設定から生成されたモジュールは `react-native` の `NativeModules` オブジェクトを通して JavaScript から使用可能になります。例えば、
+
+```js
+var { NativeModules } = require('react-native');
+var { Person } = NativeModules;
+
+Person.greet('Tadeu');
+```
+
+これは次の仕組みで動作します。メソッドの呼び出しはモジュール名・メソッド名・すべての引数を含めてキューに積まれます。 JavaScript 実行の最後で、このキューが呼び出しを処理するネイティブ側に渡されるのです。
