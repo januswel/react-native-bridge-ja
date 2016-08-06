@@ -104,7 +104,7 @@ RCT_EXPORT_METHOD(greet:(NSString *)name)
 
 次の図は「ブリッジ」初期化時の依存関係を表しています。
 
-![initialization](images/initialisation.svg)
+![initialization](https://raw.githubusercontent.com/januswel/react-native-bridge-ja/master/images/initialisation.svg)
 
 ### モジュールの初期化
 
@@ -217,7 +217,7 @@ Person.greet('Tadeu');
 
 上のコードでモジュールを呼び出した場合、次の図に示されることがおこります。
 
-![graph](images/graph.svg)
+![graph](https://raw.githubusercontent.com/januswel/react-native-bridge-ja/master/images/graph.svg)
 
 呼び出しはネイティブ側からはじまらなければなりません[^3]。実行にあたって `NativeModules` のメソッドを呼ぶことで JavaScript を呼び出します。 `NativeModules` はネイティブ側で実行される呼び出しをキューに積みます。 JavaScript 側が完了すると、ネイティブ側はキューに積まれた呼び出し群を参照し、それらを実行します。 JavaScript のコールバックや呼び出しは「ブリッジ」を経由して再び JavaScript 側で実行されます。その際、 `_bridge` インスタンスを使うことでネイティブモジュールを通した `enqueueJSCall:args:` の呼び出しが可能になります。
 
