@@ -19,8 +19,8 @@ http://tadeuzagallo.com/blog/react-native-bridge/
 注1: シャドウキューは実際にはスレッドというより GCD キューですが、この名前を提案しています
 訳注1: [日本語訳](https://developer.apple.com/jp/documentation/ConcurrencyProgrammingGuide.pdf)もあります
 
-Native モジュール
------------------
+ネイティブモジュール
+--------------------
 
 _もしあなたがネイティブモジュールの作り方を知らない場合、先に[ドキュメント](http://facebook.github.io/react-native/docs/native-modules-ios.html)を確認されることをおすすめします。_
 
