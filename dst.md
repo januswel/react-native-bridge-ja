@@ -226,3 +226,54 @@ Person.greet('Tadeu');
 > NOTE: If you've been following the project, there used to be a queue of calls from native -> JS as well, that'd be dispatched on every vSYNC, but it's been removed in order to improve start up time
 
 注意： React Native プロジェクトを追っている方はかつてネイティブ側から JavaScript 側の呼び出しにおいてもキューが同じように使われていたことをご存知かもしれません。それは vSYNC のたびに実行されるため、起動時間を短縮するために削除されました。
+
+引数の型
+--------
+
+ネイティブ側から JavaScript 側を呼び出す場合、引数は JSON に変換されただけの `NSArray` として渡されます。が、 JavaScript 側からの呼び出しではネイティブ側の型が必要となります。 int, float, char など組み込み型を明示的に確認するためです。しかし上で言及されているように、すべてのオブジェクトや構造体に対して実行系が十分な情報を得られるとは限りません。 `NSMethodSignature` からや、型情報を文字列として保存していたとしてもです。
+
+メソッドシグネチャーから型情報を得るために正規表現を使います。また、オブジェクト変換のために [`RCTConvert`](https://github.com/facebook/react-native/blob/master/React/Base/RCTConvert.m) というユーティリティークラスを使います。これは標準でサポートされているすべての型のためのメソッドを持っています。 JSON を任意の型に変換するメソッドです。
+
+`struct` でない限り、メソッドを動的に呼び出すには [`objc_msgSend`](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/#//apple_ref/c/func/objc_msgSend) を使います。 [`objc_msgSend_stret`](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/#//apple_ref/c/func/objc_msgSend_stret) の arm64 版が存在せず、 [`NSInvocation`](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSInvocation_Class/) を使わざるを得ないからです。
+
+すべての引数を変換するとすぐに、目的のモジュールとメソッドを呼び出すためにまた別の `NSInvocation` を使います。
+
+次は例です。
+
+```objc
+// たとえば MyModule モジュールなどで次のメソッドを定義していた場合
+RCT_EXPORT_METHOD(methodWithArray:(NSArray *) size:(CGRect)size) {}
+```
+
+```js
+// そして JavaScript 側で次のように呼び出します
+require('NativeModules').MyModule.method(['a', 1], {
+  x: 0,
+  y: 0,
+  width: 200,
+  height: 100
+});
+```
+
+```objc
+// JavaScript キューは次のようにネイティブ側へ送られます
+// ** 呼び出しのキューなので、すべて配列であることを忘れないで下さい
+@[
+  @[ @0 ], // モジュール ID 群
+  @[ @1 ], // メソッド ID 群
+  @[       // 引数群
+    @[
+      @[@"a", @1],
+      @{ @"x": @0, @"y": @0, @"width": @200, @"height": @100 }
+    ]
+  ]
+];
+
+// これは次の擬似コードのような呼び出しに変換されます
+NSInvocation call
+call[args][0] = GetModuleForId(@0)
+call[args][1] = GetMethodForId(@1)
+call[args][2] = obj_msgSend(RCTConvert, NSArray, @[@"a", @1])
+call[args][3] = NSInvocation(RCTConvert, CGRect, @{ @"x": @0, ... })
+call()
+``

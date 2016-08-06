@@ -208,3 +208,50 @@ The calls have to start from native[^3] it calls into JS, and during the executi
 [^3] The graph just pictures a moment middle JavaScript execution
 
 NOTE: If you've been following the project, there used to be a queue of calls from native -> JS as well, that'd be dispatched on every vSYNC, but it's been removed in order to improve start up time
+
+Argument types
+--------------
+
+For calls from native to JS it's easier, the arguments are passed as an `NSArray` that we just encode as JSON, but for the calls from JS we need the native type, for that we check for primitives explicitly (i.e. ints, floats, chars, etc...) but as mentioned above, for any objects (and structs), the runtime doesn't give us enough information from the `NSMethodSignature`, and we save the types as strings.
+
+We use regular expression to extract the types from the method signature, and we use the [`RCTConvert`](https://github.com/facebook/react-native/blob/master/React/Base/RCTConvert.m) utility class to actually transform the objects, it has a method for every type supported by default, and it tries to convert the `JSON` input into the desired type.
+
+We use [`objc_msgSend`](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/#//apple_ref/c/func/objc_msgSend) to call the method dynamically, unless it's a `struct`, since there's no version of [`objc_msgSend_stret`](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/#//apple_ref/c/func/objc_msgSend_stret) on arm64, so we fallback to [`NSInvocation`](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSInvocation_Class/).
+
+Once we converted all the arguments, we use another `NSInvocation` to call the target module and method, with all the parameters.
+
+Here's an example:
+
+```objc
+// If you had the following method in a given module, e.g. `MyModule`
+RCT_EXPORT_METHOD(methodWithArray:(NSArray *) size:(CGRect)size) {}
+
+// And called it from JS, like:
+require('NativeModules').MyModule.method(['a', 1], {
+  x: 0,
+  y: 0,
+  width: 200,
+  height: 100
+});
+
+// The JS queue sent to native would then look like the following:
+// ** Remember that it's a queue of calls, so all the fields are arrays **
+@[
+  @[ @0 ], // module IDs
+  @[ @1 ], // method IDs
+  @[       // arguments
+    @[
+      @[@"a", @1],
+      @{ @"x": @0, @"y": @0, @"width": @200, @"height": @100 }
+    ]
+  ]
+];
+
+// This would convert into the following calls (pseudo code)
+NSInvocation call
+call[args][0] = GetModuleForId(@0)
+call[args][1] = GetMethodForId(@1)
+call[args][2] = obj_msgSend(RCTConvert, NSArray, @[@"a", @1])
+call[args][3] = NSInvocation(RCTConvert, CGRect, @{ @"x": @0, ... })
+call()
+``
