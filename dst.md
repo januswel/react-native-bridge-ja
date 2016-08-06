@@ -49,3 +49,22 @@ RCT_EXPORT_METHOD(greet:(NSString *)name)
 
 これら 2 つのマクロ、 RCT_EXPORT_MODULE と RCT_EXPORT_METHOD について焦点をあてましょう。どんなものに展開されるか、その役割とは何か、そこからどのように動くかといったことです。
 
+RCT_EXPORT_MODULE([js_name])
+----------------------------
+
+名前が示すとおり、あなたのモジュールをエクスポートします。が、このときの「エクスポート」とはどういう意味でしょうか ? これは「ブリッジ」にあなたのモジュールを認識させることなのです。
+
+その定義はとてもシンプルなものです。
+
+```objc
+#define RCT_EXPORT_MODULE(js_name) \
+  RCT_EXTERN void RCTRegisterModule(Class); \
+  + (NSString \*)moduleName { return @#js_name; } \
+  + (void)load { RCTRegisterModule(self); }
+```
+
+これは次に挙げることをしています。
+
+- まず RCTRegisterModule を extern 関数として宣言しています。これは、関数の実装がコンパイラーから見えないですが、リンク時に使用可能であることを意味しています。
+- 次に、任意のマクロパラメーター js_name を返す moduleName というメソッドを宣言しています。ここではあなたのモジュールが Objective-C のクラス名ではなく、 JavaScript での名前を持って欲しいからですね。
+- 最後に、「ブリッジ」にこのモジュールを認識させるため、上で定義した RCTRegisterModule 関数を呼び出す load メソッドを宣言しています。アプリはメモリー上にロードされた際、すべてのクラスに対してこの load メソッドを呼び出します。
