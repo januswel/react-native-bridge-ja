@@ -10,9 +10,12 @@ http://tadeuzagallo.com/blog/react-native-bridge/
 
 何よりも先に、 React Native では 3 つのメインスレッド (注1) があることを覚えておいてください。
 
-- シャドウキュー: コンポーネント再配置時に使用されます
-- メインスレッド: UIKit が使用します
-- JavaScript スレッド: あなたの JavaScript コードが実際に走ります
+- シャドウキュー
+    - コンポーネント再配置時に使用されます
+- メインスレッド
+    - UIKit が使用します
+- JavaScript スレッド
+    - あなたの JavaScript コードが実際に走ります
 
 さらに、すべてのネイティブモジュールは指定されないかぎりそれぞれの [GCD](https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html)(訳注1) キューを持っています ( 詳細についてはこれから述べます ) 。
 
