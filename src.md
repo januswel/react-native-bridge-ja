@@ -12,7 +12,7 @@ Before anything else, keep in mind that there are 3 "main" threads** in React Na
 - The main thread: where UIKit does its thing
 - The JavaScript thread: where your JS code is actually running
 
-Plus every native module has its own GCD Queue unless it specifies otherwise (a more detailed explanation is coming).
+Plus every native module has its own [GCD](https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html) Queue unless it specifies otherwise (a more detailed explanation is coming).
 
 ** The "shadow queue" is actually a GCD Queue rather than a thread, as the name suggests.
 
