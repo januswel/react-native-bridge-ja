@@ -19,9 +19,9 @@ Plus every native module has its own GCD Queue unless it specifies otherwise (a 
 Native Modules
 --------------
 
-_if you don’t know how to create a Native Module yet, I’d recommend you check the documentation before._
+_if you don't know how to create a Native Module yet, I'd recommend you check the documentation before._
 
-Here’s an example Person native module, that both, receives calls from JavaScript and calls into JS.
+Here's an example Person native module, that both, receives calls from JavaScript and calls into JS.
 
 ```objc
 @interface Person : NSObject <RCTBridgeModule>
