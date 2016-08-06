@@ -45,12 +45,10 @@ RCT_EXPORT_METHOD(greet:(NSString *)name)
 @end
 ```
 
-> We are going to focus on these two macros, RCT_EXPORT_MODULE and RCT_EXPORT_METHOD, what they expand into, what are their roles and how does it work from there.
 
 これら 2 つのマクロ、 RCT_EXPORT_MODULE と RCT_EXPORT_METHOD について焦点をあてましょう。どんなものに展開されるか、その役割とは何か、そこからどのように動くかといったことです。
 
 RCT_EXPORT_MODULE([js_name])
-----------------------------
 
 名前が示すとおり、あなたのモジュールをエクスポートします。が、このときの「エクスポート」とはどういう意味でしょうか ? これは「ブリッジ」にあなたのモジュールを認識させることなのです。
 
