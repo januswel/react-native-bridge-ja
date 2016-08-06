@@ -14,5 +14,6 @@
     "textlint": "^7.1.0",
     "textlint-rule-preset-japanese": "^1.3.3",
     "textlint-rule-preset-jtf-style": "^2.2.3"
-  }
+  },
+  "private": true
 }
