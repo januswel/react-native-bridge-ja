@@ -123,3 +123,24 @@ for (Class moduleClass in RCTGetModuleClasses()) {
   // ...
 }
 ```
+
+### モジュールの設定
+
+> Once we have our modules, in a background thread, we list all the methods for each module, and call the methods that begin with `__rct_export__`, so we can have a string representation of the method signature. That's important so we can have the actual types of the parameters, i.e. at runtime we'd only be able to know that a parameter is an `id`, this way we can know that it's actually an `NSString *` in this case.
+
+一度モジュールが初期化されると、バックグラウンドスレッドではそれぞれのモジュールのすべてのメソッドを列挙し、 `__rct_export__` ではじまるメソッドを呼び出します。こうすることでメソッドシグネチャーの文字列を得ることができます。パラメーターの型も知ることができるためこれは重要です。たとえば、実行時にはパラメーターが `id` 型だと知ることはできるでしょう。ただしこの方法ではそれが `NSString *` 型であることまでわかるのです。
+
+```objc
+unsigned int methodCount;
+Method *methods = class_copyMethodList(moduleClass, &methodCount);
+for (unsigned int i = 0; i < methodCount; i++) {
+  Method method = methods[i];
+  SEL selector = method_getName(method);
+  if ([NSStringFromSelector(selector) hasPrefix:@"__rct_export__"]) {
+    IMP imp = method_getImplementation(method);
+    NSArray *entries = ((NSArray *(*)(id, SEL))imp)(_moduleClass, selector);
+    //...
+    [moduleMethods addObject:/* Object representing the method */];
+  }
+}
+```
