@@ -18,7 +18,7 @@ Bridging in React Native
 さらに、すべてのネイティブモジュールは指定されないかぎりそれぞれの [GCD](https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html)[^2] キューを持っています ( 詳細についてはこれから述べます ) 。
 
 [^1]: 名前を示すとおり、シャドウキューは実際にはスレッドというより GCD キューです
-[^2]: 訳注 [日本語訳](https://developer.apple.com/jp/documentation/ConcurrencyProgrammingGuide.pdf)もあります
+[^2]: 訳注： [日本語訳](https://developer.apple.com/jp/documentation/ConcurrencyProgrammingGuide.pdf)もあります
 
 ネイティブモジュール
 --------------------
@@ -211,3 +211,18 @@ Person.greet('Tadeu');
 ```
 
 これは次の仕組みで動作します。メソッドの呼び出しはモジュール名・メソッド名・すべての引数を含めてキューに積まれます。 JavaScript 実行の最後で、このキューが呼び出しを処理するネイティブ側に渡されるのです。
+
+呼び出しサイクル
+----------------
+
+上のコードでモジュールを呼び出した場合、次の図に示されることがおこります。
+
+![graph](images/graph.svg)
+
+呼び出しはネイティブ側からはじまらなければなりません[^3]。実行にあたって `NativeModules` のメソッドを呼ぶことで JavaScript を呼び出します。 `NativeModules` はネイティブ側で実行される呼び出しをキューに積みます。 JavaScript 側が完了すると、ネイティブ側はキューに積まれた呼び出し群を参照し、それらを実行します。 JavaScript のコールバックや呼び出しは「ブリッジ」を経由して再び JavaScript 側で実行されます。その際、 `_bridge` インスタンスを使うことでネイティブモジュールを通した `enqueueJSCall:args:` の呼び出しが可能になります。
+
+[^3]: 図は JavaScript を実行している途中を表しています
+
+> NOTE: If you've been following the project, there used to be a queue of calls from native -> JS as well, that'd be dispatched on every vSYNC, but it's been removed in order to improve start up time
+
+注意： React Native プロジェクトを追っている方はかつてネイティブ側から JavaScript 側の呼び出しにおいてもキューが同じように使われていたことをご存知かもしれません。それは vSYNC のたびに実行されるため、起動時間を短縮するために削除されました。

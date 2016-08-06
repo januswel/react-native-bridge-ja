@@ -195,3 +195,16 @@ Person.greet('Tadeu');
 ```
 
 The way it works is that when you call a method it goes to a queue, containing the module name, the method name and all the arguments used to call it. At the end of the JavaScript execution this queue is given back to native to execute this calls.
+
+Call cycle
+----------
+
+Now if we call the module with the code from above, here's what it looks like:
+
+![graph](images/graph.svg)
+
+The calls have to start from native[^3] it calls into JS, and during the execution, as it calls methods on `NativeModules`, it enqueues calls that have to be executed on the native side. When the JS finishes, native goes through the enqueued calls, and as it executes them, callbacks and calls through the bridge (using the `_bridge` instance available through a native module to call `enqueueJSCall:args:`) are used to call back into JS again.
+
+[^3] The graph just pictures a moment middle JavaScript execution
+
+NOTE: If you've been following the project, there used to be a queue of calls from native -> JS as well, that'd be dispatched on every vSYNC, but it's been removed in order to improve start up time
