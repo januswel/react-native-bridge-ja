@@ -129,3 +129,12 @@ for (unsigned int i = 0; i < methodCount; i++) {
   }
 }
 ```
+
+### Setup JavaScript Executor
+
+The JavaScript executors have a `-setUp` method that allows it to do more expensive work, like initialising JavaScriptCore, on a background thread. It also saves some work, since only the active executor will receive the `setUp` call, rather than all the executors available.
+
+```objc
+JSGlobalContextRef ctx = JSGlobalContextCreate(NULL);
+_context = [[RCTJavaScriptContext alloc] initWithJSContext:ctx];
+```
