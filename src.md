@@ -93,3 +93,20 @@ This whole setup is only to provide information to the bridge, so it can find ev
 Here's the bridge initialisation dependency graph:
 
 ![initialization](images/initialisation.svg)
+
+### Initialise Modules
+
+All the `RCTRegisterModule` function does is add the class to an array so the bridge can find it later when a new bridge instance is created. It goes through the modules array, create an instance of every module, store a reference to it on the bridge, give it a reference back to the bridge (so we can call both ways), and check if it has specified in which `queue` it wants to run, otherwise we give it a new queue, separate from all other modules.
+
+```objc
+NSMutableDictionary *modulesByName; // = ...
+for (Class moduleClass in RCTGetModuleClasses()) {
+  // ...
+  module = [moduleClass new];
+  if ([module respondsToSelector:@selector(setBridge:)]) {
+    module.bridge = self;
+  }
+  modulesByName[moduleName] = module;
+  // ...
+}
+```

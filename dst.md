@@ -106,4 +106,20 @@ RCT_EXPORT_METHOD(greet:(NSString *)name)
 
 ![initialization](images/initialisation.svg)
 
+### モジュールの初期化
 
+新しい「ブリッジ」インスタンスが生成された際、すべての `RCTRegisterModule` 関数がすることはあとで「ブリッジ」が探せるようにそのクラス自身を配列に追加することです。「ブリッジ」はモジュールの配列を参照して、すべてのモジュールについて「ブリッジ」上の自身への参照を格納し、「ブリッジ」への参照を提供するインスタンスを生成します。だから双方向と呼べるわけですね。そしてすべての他のモジュールから切り離すために新しいキューを与えないかぎり、どのキューで走るべきかを確認します。
+
+
+```objc
+NSMutableDictionary *modulesByName; // = ...
+for (Class moduleClass in RCTGetModuleClasses()) {
+  // ...
+  module = [moduleClass new];
+  if ([module respondsToSelector:@selector(setBridge:)]) {
+    module.bridge = self;
+  }
+  modulesByName[moduleName] = module;
+  // ...
+}
+```
