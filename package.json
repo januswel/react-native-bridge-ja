@@ -8,7 +8,7 @@
     "test:watch": "nodemon --watch dst.md --exec textlint dst.md"
   },
   "author": "januswel",
-  "license": "MIT",
+  "license": "public",
   "devDependencies": {
     "nodemon": "^1.10.0",
     "textlint": "^7.1.0",
