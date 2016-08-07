@@ -270,7 +270,7 @@ call[args][1] = GetMethodForId(@1)
 call[args][2] = obj_msgSend(RCTConvert, NSArray, @[@"a", @1])
 call[args][3] = NSInvocation(RCTConvert, CGRect, @{ @"x": @0, ... })
 call()
-``
+```
 
 スレッド実行
 ------------
