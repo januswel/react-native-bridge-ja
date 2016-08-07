@@ -143,7 +143,7 @@ for (unsigned int i = 0; i < methodCount; i++) {
 
 ### JavaScript の実行環境を整える
 
-JavaScript の実行環境は、バックグラウンドスレッドでの拡張動作を許可する `-setUp` メソッドを持っています。たとえば JavaScriptCore の初期化などです。すべての実行環境ではなく、アクティブな実行環境のみが `setUp` の呼び出しを受けるため、いくらか動作の節約になります。
+JavaScript の実行環境は、より重い処理をバックグラウンドスレッドで実行可能な `-setUp` メソッドを持っています。たとえば JavaScriptCore の初期化などです。すべての実行環境ではなく、アクティブな実行環境のみが `setUp` の呼び出しを受けるため、いくらか処理の節約になります。
 
 ```objc
 JSGlobalContextRef ctx = JSGlobalContextCreate(NULL);
